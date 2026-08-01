@@ -19,6 +19,12 @@ RUN go build -ldflags="-s -w" -o app ./main.go
 FROM alpine
 
 WORKDIR /app
-COPY --from=builder /build/app /app/
+RUN apk add --no-cache su-exec \
+    && addgroup -g 10001 -S kiss \
+    && adduser -u 10001 -S -G kiss kiss \
+    && mkdir -p /app/data \
+    && chown -R kiss:kiss /app
+COPY --from=builder --chown=kiss:kiss /build/app /app/
+COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-CMD ["./app"]
+ENTRYPOINT ["docker-entrypoint.sh"]

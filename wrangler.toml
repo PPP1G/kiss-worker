@@ -4,3 +4,11 @@ compatibility_date = "2023-07-28"
 kv_namespaces = [
     { binding = "KV", id = "01d3a47d26ca4732b4e6189b4d095ffe", preview_id = "01d3a47d26ca4732b4e6189b4d095ffe" }
 ]
+
+[[durable_objects.bindings]]
+name = "SYNC_OBJECT"
+class_name = "SyncObject"
+
+[exports.SyncObject]
+type = "durable-object"
+storage = "sqlite"

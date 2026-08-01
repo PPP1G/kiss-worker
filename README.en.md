@@ -25,14 +25,17 @@ kv_namespaces = [
 ]
 ```
 
-3. Execute the following commands in sequence. When the execution is completed, you will be asked to set your own password. You may need to connect to Cloudflare authorization when deploying for the first time.
+3. Execute the following commands in sequence. You may need to authorize Cloudflare when deploying for the first time. The `secret` command prompts for your password.
 
 ```sh
-yarn install
-yarn deploy
+npm install
+npm run deploy
+npm run secret
 ```
 
 4. (Optional) Log in to the Cloudflare management panel, enter the path `dashboard > select Workers & Pages > kiss-worker`, click the `Trigger` tab, and then click `Add Custom Domain` to add a domain name to access.
+
+Existing installations can upgrade the same Worker in place. Keep the Worker name and KV binding in `wrangler.toml`, then run `npm run deploy`. Cloudflare creates the Durable Object automatically and existing KV records migrate lazily when accessed. New data is authoritative in Durable Object storage, so export it before rolling back to an older Worker version.
 
 ## `docker` deployment method
 
@@ -43,16 +46,19 @@ yarn deploy
 
 ### Deployment steps
 
-1. Clone the project and modify the `docker-compose.yml` file to change the characters after `APP_KEY` to your own password.
+1. Clone the project and create a `.env` file in the project directory with your own password.
+
+```env
+APP_KEY=replace-with-a-random-secret
+```
 
 ```yml
-version: "3.1"
 services:
   kiss-worker:
     image: fishjar/kiss-worker
     environment:
       PORT: 8080
-      APP_KEY: 123456 # Change password here
+      APP_KEY: "${APP_KEY:?APP_KEY is required}"
       APP_DATAPATH: data
     ports:
       - 8080:8080

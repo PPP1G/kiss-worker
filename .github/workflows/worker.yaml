@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 env:
-  NODE_VERSION: '20.x' 
+  NODE_VERSION: '22.x'
 
 jobs:
   deploy:
@@ -26,10 +26,16 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Build
-        run: yarn install && yarn build
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Publish
-        uses: cloudflare/wrangler-action@3.0.0
-        with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
