@@ -7,6 +7,13 @@
   "engines": {
     "node": ">=22"
   },
+  "cloudflare": {
+    "bindings": {
+      "AUTH_VALUE": {
+        "description": "KISS-Translator 客户端使用的同步密码。请设置一个足够长的随机字符串；它不是 Cloudflare API Token。"
+      }
+    }
+  },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "0.20.1",
     "vitest": "4.1.10",
